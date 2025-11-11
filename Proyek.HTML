@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Proyek - Registrasi Servis On-Demand</title>
+  <link rel="stylesheet" href="Proyek.css">
+</head>
+<body>
+  <main class="container">
+    <section class="card role-card">
+      <h1>Daftar Akun</h1>
+      <p class="lead">Pilih peran dan lengkapi data untuk mulai menerima atau membuat pesanan.</p>
+
+      <div class="role-toggle" role="radiogroup" aria-label="Pilih peran">
+        <button id="role-customer" class="role active" data-role="customer" aria-checked="true">Pelanggan</button>
+        <button id="role-tech" class="role" data-role="technician" aria-checked="false">Teknisi / Toko</button>
+      </div>
+
+      <form id="registerForm" class="form" novalidate>
+        <div class="row">
+          <label for="name">Nama lengkap</label>
+          <input id="name" name="name" type="text" required />
+        </div>
+
+        <div class="row">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" required />
+        </div>
+
+        <div class="row">
+          <label for="phone">No HP</label>
+          <input id="phone" name="phone" type="tel" pattern="[0-9+ ]{6,20}" />
+        </div>
+
+        <div class="row">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" minlength="6" required />
+        </div>
+
+        <div id="techFields" class="collapsible" aria-hidden="true">
+          <h3 class="sub">Data Toko / Teknisi</h3>
+
+          <div class="row">
+            <label for="shop_name">Nama Toko</label>
+            <input id="shop_name" name="shop_name" type="text" />
+          </div>
+
+          <div class="row">
+            <label for="operating_hours">Jam Operasional</label>
+            <input id="operating_hours" name="operating_hours" type="text" placeholder="08:00-17:00" />
+          </div>
+
+          <div class="row">
+            <label for="skills">Keahlian (pisahkan dengan koma)</label>
+            <input id="skills" name="skills" type="text" placeholder="komputer,kulkas,mesin cuci" />
+          </div>
+
+          <div class="row">
+            <label for="docs">Dokumen Verifikasi (PDF/JPG/PNG)</label>
+            <input id="docs" name="docs" type="file" accept=".pdf,image/*" />
+            <small id="docsPreview" class="muted"></small>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="btn primary">Daftar</button>
+          <button id="googleBtn" type="button" class="btn google">
+            <span class="g-icon">G</span> Daftar dengan Google
+          </button>
+        </div>
+
+        <p class="muted small">Dengan mendaftar kamu menyetujui <a href="#">syarat & ketentuan</a>.</p>
+      </form>
+    </section>
+
+    <aside class="card info-card">
+      <div class="visual" aria-hidden="true"></div>
+      <h2>Servis Alat Elektronik On-Demand</h2>
+      <p class="muted">Daftarkan diri kamu sebagai pelanggan atau bergabung sebagai teknisi & toko. Verifikasi dokumen diperlukan untuk teknisi.</p>
+    </aside>
+  </main>
+
+  <script src="Proyek.js"></script>
+</body>
+</html>
