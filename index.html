@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servis-in Homepage</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <div class="header-container">
+
+            <div class="logo">Servis-in</div>
+
+            <nav>
+                <a href="#">Home</a>
+                <a href="#">Products</a>
+                <a href="#">About</a>
+                <a href="#">Contact</a>
+            </nav>
+
+            <div class="actions">
+                <div class="search">
+                    <input type="text" id="searchInput" placeholder="Search products...">
+                    <button onclick="filterProducts()"><i class="fas fa-search"></i></button>
+                </div>
+
+                <div class="cart">
+                    <a href="#"><i class="fas fa-shopping-cart"></i></a>
+                    <span class="cart-count" id="cartCount">0</span>
+                </div>
+
+                <a href="#"><i class="fas fa-user"></i></a>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+        <img src="aset/alatrumahtangga.jpeg" class="active" alt="Hero 1">
+        <img src="aset/elektronikkantor.jpg" alt="Hero 2">
+        <img src="aset/servis.jpeg" alt="Hero 3">
+
+        <div class="hero-content">
+            <h1>Servis-in</h1>
+            <p>Your electronic device is damaged, we are ready to repair it.</p>
+            <button>Order Now</button>
+        </div>
+
+        <div class="slider-controls">
+            <button onclick="prevSlide()">&#10094;</button>
+            <button onclick="nextSlide()">&#10095;</button>
+        </div>
+    </section>
+
+    <!-- PRODUCTS -->
+    <section class="products">
+        <h2>Kategori Servis</h2>
+
+        <div class="product-grid" id="productGrid">
+            <div class="product" data-name="komputer">
+                <img src="aset/icon/imac.png">
+                <h3>Komputer</h3>
+                <button onclick="teknisi()">Lihat Teknisi</button>
+            </div>
+
+            <div class="product" data-name="handphone">
+                <img src="aset/icon/hp.png">
+                <h3>Handphone</h3>
+                <button onclick="teknisi()">Lihat Teknisi</button>
+            </div>
+
+            <div class="product" data-name="printer">
+                <img src="aset/icon/printer.png">
+                <h3>Printer</h3>
+                <button onclick="teknisi()">Lihat Teknisi</button>
+            </div>
+
+            <div class="product" data-name="alat rumah tangga">
+                <img src="aset/icon/rumahtangga.png">
+                <h3>Alat Rumah Tangga</h3>
+                <button onclick="teknisi()">Lihat Teknisi</button>
+            </div>
+        </div>
+
+        <p class="no-results" id="noResults">No products found.</p>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; 2024 Servis-in. All rights reserved.</p>
+        <a href="#"><i class="fab fa-facebook"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
