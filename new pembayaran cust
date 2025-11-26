@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Pembayaran – Customer</title>
+
+<style>
+  body { font-family: Arial; background: #f4f4f4; padding: 20px; display:flex; justify-content:center; }
+  .card { background:white; padding:25px; width:380px; border-radius:12px; box-shadow:0 4px 14px rgba(0,0,0,0.1); }
+  .status-box { padding:15px; border-radius:8px; margin-top:20px; }
+  #statusWaiting { background:#fff6d0; border-left:5px solid #f0c200; display:none; }
+  #statusDone { background:#d4ffd4; border-left:5px solid #22aa22; display:none; }
+  button { width:100%; padding:12px; background:black; color:white; border:none; border-radius:10px; cursor:pointer; margin-top:10px; }
+</style>
+</head>
+
+<body>
+
+<div class="card" id="formCard">
+  <h2>Pembayaran</h2>
+
+  <div class="form-group">
+    <label>Nama Pemilik Rekening</label>
+    <input type="text" id="nama">
+  </div>
+
+  <div class="form-group">
+    <label>Nomor Rekening</label>
+    <input type="text" id="norek">
+  </div>
+
+  <div class="form-group">
+    <label>Bank</label>
+    <input type="text" id="bank">
+  </div>
+
+  <div class="form-group">
+    <label>Nomor Pesanan</label>
+    <input type="text" id="order">
+  </div>
+
+  <div class="form-group">
+    <label>Metode Pembayaran</label>
+    <select id="method">
+      <option value="">Pilih Metode Pembayaran</option>
+      <option>OVO</option>
+      <option>DANA</option>
+      <option>ShopeePay</option>
+      <option>Transfer Bank</option>
+      <option>Cash</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>Bukti Pembayaran</label>
+    <input type="file" id="bukti">
+  </div>
+
+  <button onclick="kirimVerifikasi()">Kirim Verifikasi</button>
+</div>
+
+<div class="status-box" id="statusWaiting">
+  <b>Status Pembayaran:</b> Menunggu verifikasi dari teknisi...
+</div>
+
+<div class="status-box" id="statusDone">
+  <b>Status Pembayaran:</b> Pembayaran diverifikasi ✔
+</div>
+
+<script>
+function kirimVerifikasi() {
+  const nama = document.getElementById("nama").value.trim();
+  const norek = document.getElementById("norek").value.trim();
+  const bank = document.getElementById("bank").value.trim();
+  const order = document.getElementById("order").value.trim();
+  const method = document.getElementById("method").value.trim();
+  const bukti = document.getElementById("bukti").value.trim();
+
+  // Check if ALL fields are filled
+  const allFilled = nama && norek && bank && order && method && bukti;
+
+  if (allFilled) {
+    // If complete → auto verified
+    localStorage.setItem("paymentStatus", "verified");
+  } else {
+    // If incomplete → waiting
+    localStorage.setItem("paymentStatus", "waiting");
+  }
+
+  updateStatusView();
+}
+
+function updateStatusView() {
+  const status = localStorage.getItem("paymentStatus");
+
+  document.getElementById("formCard").style.display = "none";
+
+  if (status === "verified") {
+    document.getElementById("statusDone").style.display = "block";
+    document.getElementById("statusWaiting").style.display = "none";
+  } else {
+    document.getElementById("statusWaiting").style.display = "block";
+    document.getElementById("statusDone").style.display = "none";
+  }
+}
+
+// Auto-load status on page load
+window.onload = updateStatusView;
+</script>
+
+</body>
+</html>

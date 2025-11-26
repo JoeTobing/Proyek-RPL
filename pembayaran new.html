@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Pembayaran</title>
+
+<style>
+  body {
+    font-family: Arial;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    background: #f4f4f4;
+  }
+
+  .card {
+    background: white;
+    padding: 25px;
+    width: 380px;
+    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+    display: none;
+  }
+
+  h2 {
+    margin-bottom: 20px;
+  }
+
+  .form-group {
+    margin-bottom: 18px;
+  }
+
+  label {
+    font-weight: bold;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  input[type="text"],
+  select,
+  input[type="file"],
+  textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-sizing: border-box;
+    font-size: 15px;
+  }
+
+  button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    background: black;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+  }
+
+  .qr-box {
+    text-align: center;
+    margin: 20px 0;
+  }
+
+  #mainPage {
+    display: block;
+  }
+</style>
+</head>
+
+<body>
+
+<!-- ===================== MAIN PAYMENT PAGE ===================== -->
+<div class="card" id="mainPage">
+  <h2>Pembayaran</h2>
+
+  <div class="form-group">
+    <label>Nama Pemilik Rekening</label>
+    <input type="text" id="nama" placeholder="Contoh: Andi Saputra">
+  </div>
+
+  <div class="form-group">
+    <label>Nomor Pesanan</label>
+    <input type="text" id="order" placeholder="Contoh: ORD-12345">
+  </div>
+
+  <div class="form-group">
+    <label>Metode Pembayaran</label>
+    <select id="method">
+      <option value="">Pilih Metode Pembayaran</option>
+      <option value="bank">Bank Transfer</option>
+      <option value="ewallet">E-Wallet</option>
+      <option value="qris">QRIS</option>
+      <option value="cash">Cash</option>
+    </select>
+  </div>
+
+  <button onclick="goNext()">Lanjutkan</button>
+</div>
+
+
+<!-- ===================== BANK TRANSFER PAGE ===================== -->
+<div class="card" id="bankPage">
+  <h2>Bank Transfer</h2>
+
+  <p>Virtual Account Anda:</p>
+  <input type="text" value="893829182738123" readonly style="font-weight:bold">
+
+  <button onclick="showUploadBank()">Saya Sudah Transfer</button>
+</div>
+
+<!-- Upload page for Bank -->
+<div class="card" id="bankUploadPage">
+  <h2>Upload Bukti Transfer</h2>
+
+  <input type="file" id="bankProof">
+
+  <button onclick="submitBankPayment()">Kirim Verifikasi</button>
+</div>
+
+
+<!-- ===================== E-WALLET CHECKOUT PAGE ===================== -->
+<div class="card" id="ewalletCheckout">
+  <h2>Dummy E-Wallet</h2>
+
+  <p>Jumlah yang harus dibayar:</p>
+  <input type="text" id="amountRequired" value="50000" readonly style="font-weight:bold;">
+
+  <p>Masukkan jumlah yang Anda bayar:</p>
+  <input type="number" id="amountEntered" placeholder="Contoh: 50000">
+
+  <button onclick="checkAmount()">Lanjutkan Pembayaran</button>
+</div>
+
+<!-- ===================== E-WALLET PIN PAGE ===================== -->
+<div class="card" id="ewalletPIN">
+  <h2>Masukkan PIN E-Wallet</h2>
+
+  <input type="password" id="pinInput" placeholder="Masukkan PIN (contoh: 123456)"
+    style="letter-spacing:6px; font-size:20px; text-align:center;">
+
+  <button onclick="verifyEwalletPIN()">Bayar</button>
+</div>
+
+
+
+
+<!-- ===================== QRIS PAGE ===================== -->
+<div class="card" id="qrisPage">
+  <h2>QRIS Pembayaran</h2>
+
+  <div class="qr-box">
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=PAYMENT-12345" alt="QRIS">
+  </div>
+
+  <button onclick="finishQris()">Selesai</button>
+</div>
+
+
+<!-- ===================== CASH PAGE ===================== -->
+<div class="card" id="cashPage">
+  <h2>Pembayaran Cash</h2>
+
+  <p>Silakan upload bukti pembayaran cash.</p>
+  <input type="file" id="cashProof">
+
+  <button onclick="submitCashPayment()">Kirim Verifikasi</button>
+</div>
+
+
+<!-- ===================== DONE PAGE ===================== -->
+<div class="card" id="donePage">
+  <h2>Status Pembayaran</h2>
+  <p id="doneMsg">Pembayaran berhasil diverifikasi.</p>
+</div>
+
+
+<script>
+// Hide all pages
+function hideAll() {
+  document.querySelectorAll(".card").forEach(card => card.style.display = "none");
+}
+
+// NEXT based on payment method
+function goNext() {
+  const nama = document.getElementById("nama").value.trim();
+  const order = document.getElementById("order").value.trim();
+  const method = document.getElementById("method").value.trim();
+
+  // Validasi: nama wajib
+  if (!nama) {
+    alert("Nama pemilik rekening wajib diisi!");
+    return;
+  }
+
+  // Validasi: nomor pesanan wajib
+  if (!order) {
+    alert("Nomor pesanan wajib diisi!");
+    return;
+  }
+
+  // Validasi: metode pembayaran wajib dipilih
+  if (!method || method === "") {
+    alert("Silakan pilih metode pembayaran!");
+    return;
+  }
+
+  // Kalau lolos semua validasi → lanjut
+  hideAll();
+
+  if (method === "bank") document.getElementById("bankPage").style.display = "block";
+  if (method === "ewallet") document.getElementById("ewalletCheckout").style.display = "block";
+  if (method === "qris") document.getElementById("qrisPage").style.display = "block";
+  if (method === "cash") document.getElementById("cashPage").style.display = "block";
+}
+
+
+// BANK: go to proof upload
+function showUploadBank() {
+  hideAll();
+  document.getElementById("bankUploadPage").style.display = "block";
+}
+
+// BANK: submit
+function submitBankPayment() {
+  // API simulation
+  fetch("/api/payment/bank", {
+    method: "POST",
+    body: JSON.stringify({ method: "bank", status: "pending" }),
+    headers: { "Content-Type": "application/json" }
+  });
+
+  hideAll();
+  document.getElementById("doneMsg").innerText = "Pembayaran Berhasil.";
+  document.getElementById("donePage").style.display = "block";
+}
+
+// EWALLET: Dummy API simulation
+// Go to e-wallet dummy checkout
+function goNext() {
+  const method = document.getElementById("method").value;
+
+  if (!method) {
+    alert("Silakan pilih metode.");
+    return;
+  }
+
+  hideAll();
+
+  if (method === "bank") document.getElementById("bankPage").style.display = "block";
+  if (method === "ewallet") document.getElementById("ewalletCheckout").style.display = "block";
+  if (method === "qris") document.getElementById("qrisPage").style.display = "block";
+  if (method === "cash") document.getElementById("cashPage").style.display = "block";
+}
+
+// Step 1 → Validate amount before going to PIN page
+function checkAmount() {
+  const required = parseInt(document.getElementById("amountRequired").value);
+  const entered = parseInt(document.getElementById("amountEntered").value);
+
+  // No empty input
+  if (!entered) {
+    alert("Silakan masukkan jumlah pembayaran!");
+    return;
+  }
+
+  // Amount mismatch check
+  if (entered !== required) {
+    alert("Jumlah pembayaran tidak sesuai! Harap bayar sesuai nominal.");
+    return;
+  }
+
+  // If valid → go to PIN page
+  hideAll();
+  document.getElementById("ewalletPIN").style.display = "block";
+}
+
+// Step 2 → E-wallet checkout → PIN page
+function goEwalletPIN() {
+  hideAll();
+  document.getElementById("ewalletPIN").style.display = "block";
+}
+
+
+// Step 3 → Verify PIN
+function verifyEwalletPIN() {
+  const pin = document.getElementById("pinInput").value;
+
+  // Cek apakah PIN hanya angka
+  const onlyNumbers = /^[0-9]+$/.test(pin);
+
+  if (!pin || !onlyNumbers) {
+    alert("PIN hanya boleh berupa angka!");
+    return;
+  }
+
+  // API CALL → Anggap selalu berhasil
+  fetch("/api/payment/ewallet", {
+    method: "POST",
+    body: JSON.stringify({
+      method: "ewallet",
+      status: "success",
+      pinEntered: pin
+    }),
+    headers: { "Content-Type": "application/json" }
+  });
+
+  hideAll();
+  document.getElementById("doneMsg").innerText =
+    "Pembayaran E-Wallet berhasil.";
+  document.getElementById("donePage").style.display = "block";
+}
+
+
+
+// QRIS done
+function finishQris() {
+  fetch("/api/payment/qris", {
+    method: "POST",
+    body: JSON.stringify({ method: "qris", status: "success" }),
+    headers: { "Content-Type": "application/json" }
+  });
+
+  hideAll();
+  document.getElementById("doneMsg").innerText = "Pembayaran QRIS berhasil.";
+  document.getElementById("donePage").style.display = "block";
+}
+
+// CASH: submit
+function submitCashPayment() {
+  fetch("/api/payment/cash", {
+    method: "POST",
+    body: JSON.stringify({ method: "cash", status: "pending" }),
+    headers: { "Content-Type": "application/json" }
+  });
+
+  hideAll();
+  document.getElementById("doneMsg").innerText = "Pembayaran cash selesai.";
+  document.getElementById("donePage").style.display = "block";
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Pembayaran</title>
+
+<style>
+  body {
+    font-family: Arial;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    background: #f4f4f4;
+  }
+
+  .card {
+    background: white;
+    padding: 25px;
+    width: 380px;
+    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+  }
+
+  h2 {
+    margin-bottom: 20px;
+  }
+
+  .form-group {
+    margin-bottom: 18px;
+  }
+
+  label {
+    font-weight: bold;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  input[type="text"],
+  select,
+  input[type="file"],
+  textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-sizing: border-box;
+    font-size: 15px;
+  }
+
+  textarea {
+    height: 80px;
+    resize: vertical;
+  }
+
+  button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    background: black;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+  }
+
+  .status-box {
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+    font-size: 15px;
+    display: none;
+  }
+
+  #statusWaiting {
+    background: #fff6d0;
+    border-left: 5px solid #f0c200;
+  }
+
+  #statusVerified {
+    background: #d4ffd4;
+    border-left: 5px solid #22aa22;
+  }
+
+  #resetBtn {
+    background: #666;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="card" id="formCard">
+
+  <h2>Pembayaran</h2>
+
+  <div class="form-group">
+    <label>Nama Pemilik Rekening</label>
+    <input type="text" id="nama" placeholder="Contoh: Andi Saputra">
+  </div>
+
+  <div class="form-group">
+    <label>Nomor Rekening</label>
+    <input type="text" id="norek" placeholder="Contoh: 1234567890">
+  </div>
+
+  <div class="form-group">
+    <label>Bank</label>
+    <input type="text" id="bank" placeholder="Contoh: BCA / BRI / Mandiri">
+  </div>
+
+  <div class="form-group">
+    <label>Nomor Pesanan</label>
+    <input type="text" id="order" placeholder="Contoh: ORD-12345">
+  </div>
+
+  <div class="form-group">
+    <label>Metode Pembayaran</label>
+    <select id="method">
+      <option value="">Pilih Metode Pembayaran</option>
+      <option>OVO</option>
+      <option>DANA</option>
+      <option>ShopeePay</option>
+      <option>Transfer Bank</option>
+      <option>Cash</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>Upload Bukti Pembayaran</label>
+    <input type="file" id="bukti">
+  </div>
+
+  <div class="form-group">
+    <label>Catatan (Opsional)</label>
+    <textarea id="catatan" placeholder="Tulis catatan tambahan..."></textarea>
+  </div>
+
+  <button onclick="verifikasi()">Kirim Verifikasi</button>
+
+</div>
+
+<div class="status-box" id="statusWaiting">
+  <b>Status Pembayaran:</b> Data tidak lengkap. Silahkan isi kembali.
+</div>
+
+<div class="status-box" id="statusVerified">
+  <b>Status Pembayaran:</b> Pembayaran Terverifikasi ✔
+</div>
+
+<button id="resetBtn" style="display:none;" onclick="resetStatus()">Reset Form</button>
+
+<script>
+function verifikasi() {
+  const nama = document.getElementById("nama").value.trim();
+  const norek = document.getElementById("norek").value.trim();
+  const bank = document.getElementById("bank").value.trim();
+  const order = document.getElementById("order").value.trim();
+  const method = document.getElementById("method").value.trim();
+  const bukti = document.getElementById("bukti").value.trim();
+
+  const allFilled = nama && norek && bank && order && method && bukti;
+
+  if (allFilled) {
+    localStorage.setItem("paymentStatus", "verified");
+  } else {
+    localStorage.setItem("paymentStatus", "waiting");
+  }
+
+  updateView();
+}
+
+function updateView() {
+  const status = localStorage.getItem("paymentStatus");
+
+  // Hide form after submission
+  if (status) {
+    document.getElementById("formCard").style.display = "none";
+    document.getElementById("resetBtn").style.display = "block";
+
+    if (status === "verified") {
+      document.getElementById("statusVerified").style.display = "block";
+      document.getElementById("statusWaiting").style.display = "none";
+    } else {
+      document.getElementById("statusWaiting").style.display = "block";
+      document.getElementById("statusVerified").style.display = "none";
+    }
+  }
+}
+
+function resetStatus() {
+  localStorage.removeItem("paymentStatus");
+  location.reload();
+}
+
+// On first load, only show status if user previously submitted
+window.onload = function() {
+  const status = localStorage.getItem("paymentStatus");
+
+  if (status) {
+    updateView();
+  }
+};
+</script>
+
+</body>
+</html>

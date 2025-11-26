@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Teknisi – Verifikasi</title>
+
+<style>
+  body { font-family: Arial; background:#eef5ff; padding:20px; display:flex; justify-content:center; }
+  .box { background:white; padding:25px; width:400px; border-radius:12px; box-shadow:0 4px 14px rgba(0,0,0,0.15); }
+  button { width:100%; padding:12px; background:#0055ff; color:white; border:none; border-radius:10px; cursor:pointer; font-size:16px; margin-top:10px; }
+  #verifiedMsg { color:green; font-weight:bold; margin-top:15px; display:none; }
+  #noPending { color:#cc0000; font-weight:bold; margin-top:15px; display:none; }
+</style>
+
+</head>
+<body>
+
+<div class="box">
+  <h2>Panel Teknisi</h2>
+
+  <p>Status pembayaran saat ini:</p>
+  <p id="statusInfo"></p>
+
+  <button id="verifyBtn" onclick="verifikasiPembayaran()">Verifikasi Pembayaran</button>
+
+  <p id="verifiedMsg">Pembayaran telah diverifikasi ✔</p>
+  <p id="noPending">Tidak ada pembayaran yang menunggu.</p>
+</div>
+
+<script>
+// Load status
+window.onload = function() {
+  const status = localStorage.getItem("paymentStatus");
+
+  if (status === "waiting") {
+    document.getElementById("statusInfo").innerText = "Menunggu verifikasi";
+    document.getElementById("verifyBtn").style.display = "block";
+  }
+  else if (status === "verified") {
+    document.getElementById("statusInfo").innerText = "Sudah diverifikasi";
+    document.getElementById("verifiedMsg").style.display = "block";
+    document.getElementById("verifyBtn").style.display = "none";
+  }
+  else {
+    document.getElementById("statusInfo").innerText = "Tidak ada data.";
+    document.getElementById("noPending").style.display = "block";
+    document.getElementById("verifyBtn").style.display = "none";
+  }
+}
+
+function verifikasiPembayaran() {
+  // Technician verifies payment
+  localStorage.setItem("paymentStatus", "verified");
+
+  document.getElementById("statusInfo").innerText = "Sudah diverifikasi";
+  document.getElementById("verifiedMsg").style.display = "block";
+  document.getElementById("verifyBtn").style.display = "none";
+}
+</script>
+
+</body>
+</html>
+
